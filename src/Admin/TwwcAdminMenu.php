@@ -1,12 +1,12 @@
 <?php
 namespace TwwcProtein\Admin;
 
-use PHPCSExtra\Universal\Sniffs\Arrays\MixedKeyedUnkeyedArraySniff;
+use TwwcProtein\Includes\TwwcView;
 use TwwcProtein\Options\TwwcOptions;
 use TwwcProtein\Admin\TwwcBeans;
 
 class TwwcAdminMenu {
-    const PAGE_IDENTIFIER = 'twwc-calculator';
+    const PAGE_IDENTIFIER = 'twwc-protein';
 
     const PAGE_IDENTIFIER_PROTEIN = 'twwc-protein-calculator';
 
@@ -73,7 +73,7 @@ class TwwcAdminMenu {
         $page_identifier = $this->get_page_identifier();
 
         $menu = add_menu_page(
-            'TWW Calculator: ' . __('Dashboard', 'twwc-calculator'),
+            'TWW Calculator: ' . __('Dashboard', 'twwc-protein'),
             'TWW Calculator',
             $manage_capability,
             $page_identifier,
@@ -84,8 +84,8 @@ class TwwcAdminMenu {
 
         $submenu = add_submenu_page(
             $page_identifier,
-            'TWW Calculator: ' . __('Settings', 'twwc-calculator'),
-            __('Settings', 'twwc-calculator'),
+            'TWW Calculator: ' . __('Settings', 'twwc-protein'),
+            __('Settings', 'twwc-protein'),
             $manage_capability,
             self::COMMON_SETTINGS_PAGE,
             [$this, 'show_page'],
@@ -94,8 +94,8 @@ class TwwcAdminMenu {
 
         $anotherSubmenu = add_submenu_page(
             $page_identifier,
-            'TWW Calculator: ' . __('Protein Calculator', 'twwc-calculator'),
-            __('Protein Calculator', 'twwc-calculator'),
+            'TWW Calculator: ' . __('Protein Calculator', 'twwc-protein'),
+            __('Protein Calculator', 'twwc-protein'),
             $manage_capability,
             self::PROTEIN_CALCULATOR_SETTINGS_PAGE,
             [$this, 'show_page'],
@@ -116,7 +116,7 @@ class TwwcAdminMenu {
 
         $version = '1.32.5';
 
-        wp_enqueue_style('twwc-admin-js', TWWC_PROTEIN_PLUGIN_URL . 'resources/css/twwc-admin.css', [], $version, 'all' );
+        wp_enqueue_style('twwc-admin-css', TWWC_PROTEIN_PLUGIN_URL . 'resources/css/twwc-admin.css', [], $version, 'all' );
         wp_enqueue_script('twwc-admin-js', TWWC_PROTEIN_PLUGIN_URL . 'resources/js/twwc-admin.js', array( 'wp-color-picker' ), $version, true );
 
         wp_localize_script('twwc-admin-js', 'twwc_admin_object', [
@@ -131,7 +131,7 @@ class TwwcAdminMenu {
          */
         add_settings_section(
             'twwc-common-settings-section',
-            __('TWWC Settings', 'twwc-calculator'),
+            __('TWWC Settings', 'twwc-protein'),
             null,
             self::COMMON_SETTINGS_PAGE,
             []
@@ -139,20 +139,20 @@ class TwwcAdminMenu {
 
         add_settings_field(
             'twwc-theme_options',
-            '<span class="required">*</span> '. __('Default Theme', 'twwc-calculator'),
+            '<span class="required">*</span> '. __('Default Theme', 'twwc-protein'),
             [$this, 'default_theme_callback'],
             self::COMMON_SETTINGS_PAGE,
             'twwc-common-settings-section',
-            ['max' => 32]
+            []
         );
 
         add_settings_field(
             'twwc-plugin_colors',
-            '<span class="required">*</span> '. __('Plugin Colors', 'twwc-calculator'),
+            '<span class="required">*</span> '. __('Plugin Colors', 'twwc-protein'),
             [$this, 'plugin_colors_callback'],
             self::COMMON_SETTINGS_PAGE,
             'twwc-common-settings-section',
-            ['max' => 32]
+            []
         );
 
         /**
@@ -160,7 +160,7 @@ class TwwcAdminMenu {
          */
         add_settings_section(
             'twwc-protein-calculator-settings-section',
-            __('TWWC Settings', 'twwc-calculator'),
+            __('TWWC Settings', 'twwc-protein'),
             [$this, 'protein_calculator_settings_output'],
             self::PROTEIN_CALCULATOR_SETTINGS_PAGE,
             []
@@ -168,38 +168,38 @@ class TwwcAdminMenu {
         
         add_settings_field(
             'twwc-system',
-            '<span class="required">*</span> '. __('Default Units & Measurement', 'twwc-calculator'),
+            '<span class="required">*</span> '. __('Default Units & Measurement', 'twwc-protein'),
             [$this, 'default_system_callback'],
             self::PROTEIN_CALCULATOR_SETTINGS_PAGE,
             'twwc-protein-calculator-settings-section',
-            ['max' => 32]
+            []
         );
 
         add_settings_field(
             'twwc-weight',
-            '<span class="required">*</span> '. __('Weight', 'twwc-calculator'),
+            '<span class="required">*</span> '. __('Weight', 'twwc-protein'),
             [$this, 'weight_callback'],
             self::PROTEIN_CALCULATOR_SETTINGS_PAGE,
             'twwc-protein-calculator-settings-section',
-            ['max' => 32]
+            []
         );
 
         add_settings_field(
             'twwc-pregnant',
-            '<span class="required">*</span> '. __('Pregnant/Lactating', 'twwc-calculator'),
+            '<span class="required">*</span> '. __('Pregnant/Lactating', 'twwc-protein'),
             [$this, 'pregnant_callback'],
             self::PROTEIN_CALCULATOR_SETTINGS_PAGE,
             'twwc-protein-calculator-settings-section',
-            ['max' => 32]
+            []
         );
 
         add_settings_field(
             'twwc-activity_level',
-            '<span class="required">*</span> '. __('Activity Level', 'twwc-calculator'),
+            '<span class="required">*</span> '. __('Activity Level', 'twwc-protein'),
             [$this, 'activity_level_callback'],
             self::PROTEIN_CALCULATOR_SETTINGS_PAGE,
             'twwc-protein-calculator-settings-section',
-            ['max' => 32]
+            []
         );
 
         register_setting('twwc-common-settings-options', $this->option_group, [$this, 'validate_common_settings']);
@@ -412,11 +412,21 @@ class TwwcAdminMenu {
     public function plugin_colors_callback(): void {
         $options = TwwcOptions::get_option($this->option_name);
         $value = isset($options['theme_options']['plugin_colors']['primary']) && !empty($options['theme_options']['plugin_colors']['primary']) ? $options['theme_options']['plugin_colors']['primary'] : '#E6F1D9';
+        $fields_color_value = isset($options['theme_options']['plugin_colors']['fields_color']) && !empty($options['theme_options']['plugin_colors']['fields_color']) ? $options['theme_options']['plugin_colors']['fields_color'] : '#80b741';
+        $results_text_color_value = isset($options['theme_options']['plugin_colors']['results_text_color']) && !empty($options['theme_options']['plugin_colors']['results_text_color']) ? $options['theme_options']['plugin_colors']['results_text_color'] : '#000000';
 
         echo '
-            <div class="form-group">
+            <div class="plugin-colors form-group">
                 <label for="plugin-color-primary">Brand Primary</label>
                 <input class="twwc-plugin-colors" type="text" name="' . esc_attr($this->option_name) . '[theme_options][plugin_colors][primary]" value="' . esc_attr($value) . '" />
+            </div>
+            <div class="plugin-colors form-group">
+                <label for="plugin-color-fields">Fields Color</label>
+                <input class="twwc-plugin-colors" type="text" name="' . esc_attr($this->option_name) . '[theme_options][plugin_colors][fields_color]" value="' . esc_attr($fields_color_value) . '" />
+            </div>
+            <div class="plugin-colors form-group">
+                <label for="plugin-color-fields">Results Text Color</label>
+                <input class="twwc-plugin-colors" type="text" name="' . esc_attr($this->option_name) . '[theme_options][plugin_colors][results_text_color]" value="' . esc_attr($results_text_color_value) . '" />
             </div>
         ';
     }
@@ -499,7 +509,9 @@ class TwwcAdminMenu {
     }
 
     public function activity_level_callback(): void {
-        $options = TwwcOptions::get_option($this->option_name_protein);
+        $option_name_protein = $this->option_name_protein;
+        $options = TwwcOptions::get_option($option_name_protein);
+
         $class = !empty($value) ? 'has-value' : 'required-value-missing-notice';
         $system = isset($options['system']) ? $options['system'] : 'imperial';
 
@@ -558,47 +570,13 @@ class TwwcAdminMenu {
                     <!-- add the high value here -->
                     <input style='width: 100px' class='".esc_attr($class)." protein-calculator__imperial-input' class='protein-calculator__weight' id='activity-level' name='".esc_attr($this->option_name_protein)."[activity_level][" . esc_attr($activity_level) ."][m_".esc_html($activity_level)."_high_lbs]' type='number' step='.001' value='" . esc_attr($activity_level_value_high_lbs) . "' /> <span>g/lb (high)</span>
                     <input style='width: 100px' class='".esc_attr($class)." protein-calculator__metric-input' class='protein-calculator__weight' id='activity-level' name='".esc_attr($this->option_name_protein)."[activity_level][" . esc_attr($activity_level) ."][m_".esc_html($activity_level)."_high_kg]' type='number' step='.001' value='" . esc_attr($activity_level_value_high_kg) . "' /> <span>g/kg (high)</span>
-                    <div class='protien-calculator__goals'>
-                        <div class='protein-calculator__goal'>
-                            <label>Maintain</label>
-                            <div class='protein-calculator__multipliers'>
-                                <input class='protein-calculator__imperial-input' width='75' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_maintain_lbs]' value='".esc_html($maintain_value_lbs)."' /> <span>g/lb</span>
-                                <input class='protein-calculator__metric-input' width='75' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_maintain_kg]' value='".esc_html($maintain_value_kg)."' /> <span>g/kg</span>
-                                <!-- add the high value here -->
-                                <input class='protein-calculator__imperial-input  width='75' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_maintain_high_lbs]' value='".esc_html($maintain_value_high_lbs)."' /> <span>g/lb (high)</span>
-                                <input class='protein-calculator__metric-input' width='75' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_maintain_high_kg]' value='".esc_html($maintain_value_high_kg)."' /> <span>g/kg (high)</span>
-                            </div>
-                        </div>
-                        <div class='protein-calculator__goal'>
-                            <label>Tone Up</label>
-                            <div class='protein-calculator__multipliers'>
-                                <input class='protein-calculator__imperial-input' width='75' id='sedentary-toning' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_toning_lbs]' value='" . esc_attr($toning_value_lbs) . "' /><span>g/lb</span>
-                                <input class='protein-calculator__metric-input' width='75' id='sedentary-toning' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_toning_kg]' value='" . esc_attr($toning_value_kg) . "' /><span>g/kg</span>
-                                <!-- add the high value here -->
-                                <input class='protein-calculator__imperial-input  width='75' id='sedentary-toning' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_toning_high_lbs]' value='" . esc_attr($toning_value_high_lbs) . "' /><span>g/lb (high)</span>
-                                <input class='protein-calculator__metric-input' width='75' id='sedentary-toning' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_toning_high_kg]' value='" . esc_attr($toning_value_high_kg) . "' /><span>g/kg (high)</span>
-                            </div>
-                        </div>
-                        <div class='protein-calculator__goal'>
-                            <label>Build Muscle</label>
-                            <div class='protein-calculator__multipliers'>
-                                <input class='protein-calculator__imperial-input' width='75' id='sedentary-maintain' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_muscle_growth_lbs]' value='" . esc_attr($muscle_growth_value_lbs) . "' /><span>g/lb</span>
-                                <input class='protein-calculator__metric-input' width='75' id='sedentary-maintain' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_muscle_growth_kg]' value='" . esc_attr($muscle_growth_value_kg) . "' /><span>g/kg</span>
-                                <!-- add the high value here -->
-                                <input class='protein-calculator__imperial-input  width='75' id='sedentary-maintain' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_muscle_growth_high_lbs]' value='" . esc_attr($muscle_growth_value_high_lbs) . "' /><span>g/lb (high)</span>
-                                <input class='protein-calculator__metric-input' width='75' id='sedentary-maintain' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_muscle_growth_high_kg]' value='" . esc_attr($muscle_growth_value_high_kg) . "' /><span>g/kg (high)</span>
-                            </div>
-                        </div>       
-                        <div class='protein-calculator__goal protein-calculator__goal--static'>
-                            <label>Lose Weight</label>
-                            <div class='protein-calculator__multipliers'>
-                                <input class='protein-calculator__imperial-input' width='75' id='sedentary-muscle-growth' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_weight_loss_lbs]' value='".esc_attr($weight_loss_value_lbs ) . "' /> <span>g/lb</span>
-                                <input class='protein-calculator__metric-input' width='75' id='sedentary-muscle-growth' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_weight_loss_kg]' value='".esc_attr($weight_loss_value_kg ) . "' /> <span>g/kg</span>
-                                <!-- add the high value here -->
-                                <input class='protein-calculator__imperial-input  width='75' id='sedentary-muscle-growth' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_weight_loss_high_lbs]' value='".esc_attr($weight_loss_value_high_lbs ) . "' /> <span>g/lb (high)</span>
-                                <input class='protein-calculator__metric-input' width='75' id='sedentary-muscle-growth' type='number' step='.001' name='".esc_attr($this->option_name_protein)."[activity_level][".esc_html($activity_level)."][goal][m_weight_loss_high_kg]' value='".esc_attr($weight_loss_value_high_kg ) . "' /> <span>g/kg (high)</span>
-                            </div>
-                        </div>
+                    
+                    <div class='protein-calculator__multi-wrapper'>
+                    ";
+                    
+                    TwwcView::render('admin-settings-goals', get_defined_vars(), 'templates/admin/settings');
+
+                    echo "
                     </div>
                 </div>
             </div>

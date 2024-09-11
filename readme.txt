@@ -2,9 +2,9 @@
 Contributors: thewellnessway
 Tags: protein, calculator, health, wellness, nutrition
 Requires at least: 5.0
-Tested up to: 5.9
+Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 1.0.0
+Stable tag: 1.0.22
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,7 @@ The TWW Protein Calculator Plugin for WordPress provides a simple, yet powerful 
 
 == Installation ==
 
-1. Upload `tww-protein-calculator` to the `/wp-content/plugins/` directory.
+1. Upload `twwc-protein-calculator` to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Place the shortcode `[twwc_protein_calculator]` in your posts or pages to display the protein calculator.
 
