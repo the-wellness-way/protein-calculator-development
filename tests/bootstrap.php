@@ -8,9 +8,6 @@ require_once '/app/wp-tests-config.php';
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-
-
-
 $WP_PHPUNIT_DIR = getenv('WP_PHPUNIT__DIR');
 
 if (!$WP_PHPUNIT_DIR) {
