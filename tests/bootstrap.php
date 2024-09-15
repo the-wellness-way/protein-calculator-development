@@ -18,7 +18,7 @@ if (!$WP_PHPUNIT_DIR) {
 require_once $WP_PHPUNIT_DIR . '/includes/functions.php';
 
 tests_add_filter('muplugins_loaded', function() {
-    require dirname(__DIR__) . '/twwc-protein.php';
+    require dirname(__DIR__) . '/twwc-protein-development.php';
 });
 
 
