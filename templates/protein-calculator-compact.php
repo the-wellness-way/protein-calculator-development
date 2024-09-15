@@ -7,10 +7,19 @@ $system = $protein_settings['system'] ?? null;
 $activity_level = $protein_settings['activity_level'] ?? null;
 $activity_level_default = $protein_settings['defaults'] && $protein_settings['defaults']['activity_level'] ? $protein_settings['defaults']['activity_level'] : null;
 $results_content = isset($protein_settings['content']) && isset($protein_settings['content']['results']) ? $protein_settings['content']['results'] : null;
+$header = $protein_settings['header'] ?? null;
+$header_tag = $protein_settings['header_tag'] ?? 'h2';  
 ?>
 
 <div class="protein-calculator-container">
 <div class="protein-calculator protein-calculator--compact">
+    <?php 
+        if($header) {
+            echo "<div class='protein-calculator-header'>";
+            echo "<$header_tag class='protein-calculator-header__title'>$header</$header_tag>";
+            echo "</div>";
+        }
+    ?>
     <div class="protein-calculator-inner">
         <form class="protein-calculator-form">
             <div class="protein-calculator__form-group protein-calculator__form-group--radio">
