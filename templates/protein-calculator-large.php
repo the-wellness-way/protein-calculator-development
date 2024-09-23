@@ -20,6 +20,7 @@ $header_tag = $protein_settings['header_tag'] ?? 'h2';
 
     .protein-calculator__inputs--radio input[type="radio"]:checked + label {
         <?php echo "color: ".$results_text_color_value." !important;"; ?>
+        <?php echo "background-color: ".$fields_color_value." !important;"; ?>
     }
 </style>
 

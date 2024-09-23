@@ -117,7 +117,7 @@ $header_tag = $protein_settings['header_tag'] ?? 'h2';
                     <div class="protein-calculator--results-low-end">
                         <div class="protein-calculator--results__label">
                             <label class="results-header" for="protein" style="text-align: center; color: <?php echo esc_attr($results_text_color_value); ?>; margin-bottom: 25px; display: block; font-weight: 200;">Your Optimal Protein Intake</label>
-                            <div class="protein-calculator--bmi-results__value">
+                            <div class="protein-calculator--results__value">
                                 <span style="text-align: center; color: <?php echo esc_attr($results_text_color_value); ?>; margin-bottom: 15px; display: block;" class='the-result'>&mdash;</span> 
                                 <p style="text-align: center; margin-top: 3px; font-size: 18px; padding-bottom: 0;  display: block; color: <?php echo esc_attr($results_text_color_value); ?>;">grams/day</p>
                             </div>
